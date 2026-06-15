@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - "5432:5432"
+    networks:
+      - my_net
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  bot:
+    build: ./
+    image: bot
+    container_name: bot
+    env_file:
+      - .env
+    networks:
+      - my_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+  phoenix:
+    image: arizephoenix/phoenix
+    container_name: phoenix
+    ports:
+      - "6006:6006"
+    networks:
+      - my_net
+    volumes:
+      - phoenix_data:/data
+
+networks:
+  my_net:
+    driver: bridge
+
+
+volumes:
+  database_data:
+  phoenix_data:
