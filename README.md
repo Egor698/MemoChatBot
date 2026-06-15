@@ -56,3 +56,13 @@ flowchart TD
     PERSIST --> APPEND
 
     APPEND --> END([<b>🏁 END</b>])
+```
+# Запуск через Docker
+## Запуск Compose
+* В рабочей директории с проектом создайте файл .env (пример в коде)
+* В терминале **docker compose --env-file=.env up -d**
+## Создание таблиц в БД
+* В exec контейнера bot **alembic revision --autogenerate**
+* В exec контейнера bot **alembic upgrade head**
+
+
