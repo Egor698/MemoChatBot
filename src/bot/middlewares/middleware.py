@@ -15,7 +15,6 @@ class Middleware(BaseMiddleware):
         async with sessionfactory() as session:
             service = AgentService(event.from_user.id, session)
             data["agent_service"] = service
-            data["session"] = session
 
             result = await handler(event, data)
 
